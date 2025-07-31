@@ -1,0 +1,21 @@
+2025-06-24 20:34:53,253 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:34:53,458 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:34:54,837 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:34:56,991 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:34:57,015 - __main__ - INFO - Iniciando obtención de polígonos desde la base de datos.
+2025-06-24 20:34:57,017 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:34:57,333 - __main__ - INFO - Polígonos obtenidos correctamente de la base de datos. Duración: 0.32 segundos.
+2025-06-24 20:34:57,346 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:34:57,592 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:34:58,174 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:17,391 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:17,408 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:21,395 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:26,264 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:28,916 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:28,927 - __main__ - INFO - Iniciando obtención de polígonos desde la base de datos.
+2025-06-24 20:35:28,929 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:29,189 - __main__ - INFO - Polígonos obtenidos correctamente de la base de datos. Duración: 0.26 segundos.
+2025-06-24 20:35:29,193 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:29,440 - __main__ - INFO - Conexión establecida correctamente con pymysql.
+2025-06-24 20:35:30,077 - __main__ - INFO - Conexión establecida correctamente con pymysql.

@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Cobertura | Preventa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --primary-color: #c62828;
+            --secondary-color: #e53935;
+            --accent-color: #f44336;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--light-bg);
+            color: #212529;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            background-color: white;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            padding: 0.5rem 1.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(198, 40, 40, 0.2);
+        }
+        
+        .rojo { background-color: #ffcccc; }
+        .verde { background-color: #ccffcc; }
+        
+        .file-format-card {
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .download-sample-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .download-sample-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .hover-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        [data-bs-theme="dark"] body {
+            background-color: #212529;
+            color: #f8f9fa;
+        }
+        
+        [data-bs-theme="dark"] .feature-card {
+            background-color: #2c3e50;
+            color: #f8f9fa;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        [data-bs-theme="dark"] .table {
+            color: #f8f9fa;
+        }
+        
+        [data-bs-theme="dark"] .file-format-card {
+            background-color: #2c3e50;
+            border-left-color: var(--accent-color);
+        }
+        .theme-switcher {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-switcher:hover {
+            opacity: 0.8;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(229, 57, 53, 0.25);
+        }
+        
+        .input-group-text {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .executive-header {
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .executive-alert {
+            border-left: 4px solid var(--secondary-color);
+        }
+        #mapCobertura {
+            height: 100%;
+            width: 100%;
+            /* Make sure the map div is visible and has dimensions */
+        }
+        
+        /* Nuevos estilos para la sección de resultados */
+        .result-table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .result-table {
+            margin-bottom: 0;
+        }
+        
+        .result-table th {
+            background-color: #e53935;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .status-covered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-not-covered {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .result-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .result-card-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-card-body {
+            padding: 20px;
+        }
+        
+        .result-highlight {
+            font-weight: 600;
+            color: #e53935;
+        }
+        
+        /* Nuevos estilos para la sección de GPON */
+        .gpon-details-section {
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #4a90e2;
+        }
+        
+        .gpon-details-title {
+            color: #2c5282;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gpon-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .gpon-detail-item {
+            background-color: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .gpon-detail-label {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 3px;
+        }
+        
+        .gpon-detail-value {
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación ejecutiva -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <i class="bi bi-wifi me-2"></i>
+                <span>Consultoria y Preventa</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('index') }}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('cobertura') }}">Verificación Cobertura</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('switch_bp.switch_analysis') }}">Validación Switch</a>
+                    </li>   
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    {% if current_user.is_authenticated %}
+                    <div class="dropdown">
+                        <a href="#" class="text-white dropdown-toggle d-flex align-items-center text-decoration-none" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-2"></i>
+                            {{ current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                            </a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light ms-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
+                    </a>
+                    {% endif %}
+                    
+                    <div class="ms-3 theme-switcher">
+                        <i class="bi bi-sun-fill text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-5 flex-grow-1">
+        <div class="feature-card p-4 mb-4">
+            <div class="executive-header">
+                <h1 class="text-center mb-2">Análisis de Cobertura</h1>
+                <p class="text-center text-muted mb-0">Sistema de verificación de cobertura de Gpon y fibra óptica</p>
+            </div>
+
+            <!-- Mensajes flash ejecutivos -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show executive-alert" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-{{ 'check-circle-fill' if category == 'success' else 'exclamation-triangle-fill' }} me-2"></i>
+                                <div>{{ message }}</div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Formulario ejecutivo -->
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Formulario para subir archivo -->
+                    <div class="card result-card mb-4">
+                        <div class="result-card-header">
+                            <span><i class="bi bi-file-earmark-excel me-2"></i>Procesar archivo Excel/CSV</span>
+                        </div>
+                        <div class="result-card-body">
+                            <form id="upload-form" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="points_file" class="form-label">Seleccione un archivo:</label>
+                                    <input type="file" class="form-control" name="points_file" id="points_file" accept=".csv,.xlsx" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-gear me-2"></i>Procesar Archivo
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <!-- Formulario para coordenadas manuales -->
+                    <div class="card result-card mb-4">
+                        <div class="result-card-header">
+                            <span><i class="bi bi-geo-alt me-2"></i>Verificar coordenada manual</span>
+                        </div>
+                        <div class="result-card-body">
+                            <form id="manual-form" method="post">
+                                <div class="mb-3">
+                                    <label for="manual_coords" class="form-label">Ingrese coordenadas (lat,lon):</label>
+                                    <input type="text" class="form-control" name="manual_coords" id="manual_coords" 
+                                           placeholder="Ej: 15.12345,-90.67890" required>
+                                </div>
+                                <button type="submit" class="btn btn-info w-100">
+                                    <i class="bi bi-search me-2"></i>Verificar Coordenada
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenedores para progreso y resultados -->
+            <div id="progress-container" class="mt-4" style="display:none;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span id="progress-text">Iniciando procesamiento...</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress" style="height: 20px;">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%" 
+                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+
+            <!-- Contenedor de resultados -->
+            <div id="results-container" class="mt-4"></div>
+
+            <!-- Enlace de descarga (inicialmente oculto) -->
+            <div id="download-container" class="mt-3 text-center" style="display:none;">
+                <a id="download-link" href="#" class="btn btn-success">
+                    <i class="bi bi-download me-2"></i>Descargar Resultados Completos
+                </a>
+                <p class="text-muted mt-2">El archivo estará disponible por 10 minutos</p>
+            </div>
+
+            <!-- Mostrar el mapa -->
+            <div class="feature-card p-4 mb-4 mt-5">
+                <button class="btn btn-link text-decoration-none" type="button" 
+                        data-bs-toggle="collapse" data-bs-target="#mapContainer"
+                        onclick="initMap()"> 
+                    <i class="bi bi-map me-2"></i>Mostrar Mapa de Cobertura
+                </button>
+                
+                <div class="collapse mt-3" id="mapContainer">
+                    <div style="height: 600px; width: 100%; position: relative;">
+                        <div id="mapLoading" class="h-100 d-flex flex-column justify-content-center align-items-center">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2 text-muted">Cargando visualización...</p>
+                        </div>
+                        
+                        <div id="mapContent" style="display: none; height: 100%; width: 100%;">
+                            {% if mapa_html %}
+                                <div id="mapCobertura" style="height: 100%; width: 100%;">
+                                    {{ mapa_html|safe }}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning h-100 d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    No hay datos de mapa disponibles.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de ejemplo de archivo (oculta por defecto) -->
+            <div class="text-center mt-3">
+                <button class="btn btn-link text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#fileFormatSection">
+                    <i class="bi bi-question-circle me-2"></i>¿Necesitas ayuda con el formato del archivo?
+                </button>
+                
+                <div class="collapse mt-3" id="fileFormatSection">
+                    <div class="file-format-card card card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 text-start">
+                                <i class="bi bi-info-circle-fill text-primary me-2"></i>Formato requerido
+                            </h5>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm">
+                                <thead>
+                                    <tr class="table-light">
+                                        <th class="text-nowrap">Columna</th>
+                                        <th>Descripción</th>
+                                        <th>Tipo</th>
+                                        <th>Requerido</th>
+                                        <th>Ejemplo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Codigo</strong></td>
+                                        <td>Identificador único del punto</td>
+                                        <td>Texto</td>
+                                        <td><span class="badge bg-danger">Sí</span></td>
+                                        <td>AB12345</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Coordenadas</strong></td>
+                                        <td>Ubicación geográfica</td>
+                                        <td>Texto</td>
+                                        <td><span class="badge bg-danger">Sí</span></td>
+                                        <td>15.4712836459526,-90.3697146293521</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Departamento</strong></td>
+                                        <td>Departamento/Estado/Región</td>
+                                        <td>Texto</td>
+                                        <td><span class="badge bg-success">No</span></td>
+                                        <td>San Marcos</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Municipio</strong></td>
+                                        <td>Municipio/Ciudad/Localidad</td>
+                                        <td>Texto</td>
+                                        <td><span class="badge bg-success">No</span></td>
+                                        <td>San Pedro Sacatepéquez</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Direccion</strong></td>
+                                        <td>Dirección específica</td>
+                                        <td>Texto</td>
+                                        <td><span class="badge bg-success">No</span></td>
+                                        <td>5a calle 10-25 zona 1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3 text-start">
+                            <i class="bi bi-lightbulb-fill me-2"></i>
+                            <strong>Recomendación:</strong> Para mejores resultados, asegúrese que las coordenadas estén en formato decimal (ej: 14.123456, -90.123456) y no en grados/minutos/segundos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer ejecutivo -->
+    <footer class="bg-dark text-white py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0 small">&copy; 2025 Preventa. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Cambio de tema
+        const themeSwitcher = document.querySelector('.theme-switcher');
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-bs-theme', newTheme);
+                
+                // Cambiar el icono
+                const icon = this.querySelector('i');
+                if (newTheme === 'dark') {
+                    icon.classList.remove('bi-sun-fill');
+                    icon.classList.add('bi-moon-fill');
+                } else {
+                    icon.classList.remove('bi-moon-fill');
+                    icon.classList.add('bi-sun-fill');
+                }
+                
+                // Guardar preferencia
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+        
+        // Cargar tema guardado
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            const icon = document.querySelector('.theme-switcher i');
+            if (savedTheme === 'dark') {
+                icon.classList.remove('bi-sun-fill');
+                icon.classList.add('bi-moon-fill');
+            }
+        }
+
+        // Inicializar el mapa
+        function initMap() {
+            // Aquí iría la lógica para inicializar el mapa si fuera necesario
+            // Por ahora, simplemente mostramos el contenido del mapa
+            document.getElementById('mapLoading').style.display = 'none';
+            document.getElementById('mapContent').style.display = 'block';
+        }
+
+        // Lógica para el procesamiento de archivos y coordenadas manuales
+        document.addEventListener('DOMContentLoaded', function() {
+            const taskStatusUrl = "{{ url_for('task_status', task_id='') }}";
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const progressPercent = document.getElementById('progress-percent');
+            const resultsContainer = document.getElementById('results-container');
+            const downloadContainer = document.getElementById('download-container');
+            const downloadLink = document.getElementById('download-link');
+            let currentTaskId = null;
+        
+            // Función para mostrar un mensaje de error
+            function showError(message) {
+                resultsContainer.innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <div>
+                                <h5 class="alert-heading">Error en el procesamiento</h5>
+                                <p>${message}</p>
+                                <hr>
+                                <p class="mb-0 small">Si el problema persiste, contacte al administrador.</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+            }
+            
+            // Función para formatear los resultados
+            function formatResults(results) {
+                let html = '<div class="result-table-container">';
+                html += '<table class="table table-striped table-hover result-table">';
+                
+                // Encabezados
+                html += '<thead><tr>';
+                html += '<th>Código</th>';
+                html += '<th>Coordenadas</th>';
+                html += '<th>Dirección</th>';
+                html += '<th class="text-center">Cobertura Fibra</th>';
+                html += '<th class="text-center">Cobertura GPON</th>';
+                html += '<th>Distancia Fibra (m)</th>';
+                html += '<th>Distancia GPON (m)</th>';
+                html += '<th>Nombre GPON</th>';
+                html += '<th>Sitio GPON más cercano</th>';
+                html += '<th>Detalles GPON</th>';
+                html += '<th>Precio Fibra</th>';
+                html += '<th>Precio GPON</th>';
+                html += '</tr></thead>';
+                
+                // Filas de datos
+                html += '<tbody>';
+                results.forEach(result => {
+                    // Determinar clases CSS para resaltar coberturas
+                    const fiberClass = result['Fibra TX'] && result['Fibra TX'].includes('Tiene') ? 
+                        'bg-success text-white' : 'bg-danger text-white';
+                    
+                    const gponClass = result['Cobertura GPON'] && result['Cobertura GPON'].includes('Tiene') ? 
+                        'bg-success text-white' : 'bg-danger text-white';
+                    
+                    // Calcular distancia mínima de fibra
+                    let minFiberDistance = 'N/A';
+                    try {
+                        const distances = [
+                            parseFloat(result['Distancia Central (m)'] || Infinity),
+                            parseFloat(result['Distancia UR (m)'] || Infinity),
+                            parseFloat(result['Distancia Mufa (m)'] || Infinity)
+                        ];
+                        const minDistance = Math.min(...distances);
+                        minFiberDistance = isFinite(minDistance) ? minDistance.toFixed(2) : 'N/A';
+                    } catch (e) {
+                        minFiberDistance = 'Error';
+                    }
+                    
+                    html += '<tr>';
+                    html += `<td>${result.codigo || 'N/A'}</td>`;
+                    html += `<td>${result.Coordenadas || 'N/A'}</td>`;
+                    html += `<td>${result.Direccion || 'N/A'}</td>`;
+                    html += `<td class="text-center ${fiberClass}">${result['Fibra TX'] || 'N/A'}</td>`;
+                    html += `<td class="text-center ${gponClass}">${result['Cobertura GPON'] || 'N/A'}</td>`;
+                    html += `<td class="text-end">${minFiberDistance}</td>`;
+                    html += `<td class="text-end">${result['Distancia GPON (m)'] || 'N/A'}</td>`;
+                    html += `<td>${result['Nombre GPON'] || 'N/A'}</td>`;
+                    html += `<td>${result['Sitio GPON más cercano'] || 'N/A'}</td>`;
+                    html += `<td>${result['Detalles GPON'] || 'N/A'}</td>`;
+                    html += `<td class="fw-bold">${result['Precio Promedio Fibra'] || 'N/A'}</td>`;
+                    html += `<td class="fw-bold">${result['Precio Promedio GPON'] || 'N/A'}</td>`;
+                    html += '</tr>';
+                });
+                html += '</tbody></table></div>';
+                
+                return html;
+            }
+
+            // Función para verificar el estado de la tarea
+          // Función para verificar el estado de la tarea
+function checkTaskStatus() {
+    if (!currentTaskId) return;
+    
+    fetch(taskStatusUrl + currentTaskId)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al verificar el estado de la tarea');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Estado de la tarea:', data.state, data);
+            
+            if (data.state === 'SUCCESS') {
+                // Ocultar barra de progreso
+                progressContainer.style.display = 'none';
+                
+                // Mostrar mensaje de éxito con enlace de descarga
+                resultsContainer.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        ¡Archivo procesado correctamente! 
+                        <a href="${data.download_url}" class="alert-link fw-bold">Descargar resultados</a>
+                    </div>
+                `;
+                
+                // Mostrar enlace de descarga
+                if (data.download_url) {
+                    downloadLink.href = data.download_url;
+                    downloadContainer.style.display = 'block';
+                } else {
+                    downloadContainer.style.display = 'none';
+                }
+            } 
+            else if (data.state === 'STARTED') {
+                // Actualizar mensaje de progreso
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '5%';
+                progressText.textContent = 'Iniciando procesamiento...';
+                progressPercent.textContent = '5%';
+                
+                // Revisar de nuevo en 2 segundos
+                setTimeout(checkTaskStatus, 2000);
+            }
+            else if (data.state === 'PROGRESS') {
+                // Mostrar barra de progreso si estaba oculta
+                progressContainer.style.display = 'block';
+                
+                // Actualizar barra de progreso
+                const current = data.current || 0;
+                const total = data.total || 1;
+                const progress = Math.round((current / total) * 100);
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `Procesando ${current} de ${total} puntos...`;
+                progressPercent.textContent = `${progress}%`;
+                
+                // Revisar de nuevo en 2 segundos
+                setTimeout(checkTaskStatus, 2000);
+            }
+            else if (data.state === 'FAILURE') {
+                progressContainer.style.display = 'none';
+                
+                // Mostrar error específico del backend
+                const errorMsg = data.message || data.error || 'Error en el procesamiento';
+                showError(`Error en el procesamiento: ${errorMsg}`);
+                
+                // Detalles adicionales para depuración
+                console.error('Detalles del error:', data);
+            }
+            else if (data.state === 'PENDING') {
+                // Estado pendiente: Revisar de nuevo en 2 segundos
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                progressText.textContent = 'En espera de recursos...';
+                progressPercent.textContent = '0%';
+                
+                setTimeout(checkTaskStatus, 2000);
+            }
+            else {
+                progressContainer.style.display = 'none';
+                showError(`Estado desconocido: ${data.state}`);
+                console.error('Estado no manejado:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error al verificar estado:', error);
+            // Reintentar después de 5 segundos en caso de error de red
+            setTimeout(checkTaskStatus, 5000);
+        });
+}
+
+        
+            // Manejar envío de archivo
+            const uploadForm = document.getElementById('upload-form');
+            if (uploadForm) {
+                uploadForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    
+                    // Reiniciar estado
+                    resultsContainer.innerHTML = '';
+                    downloadContainer.style.display = 'none';
+                    progressContainer.style.display = 'block';
+                    progressBar.style.width = '0%';
+                    progressText.textContent = 'Iniciando procesamiento...';
+                    progressPercent.textContent = '0%';
+                    
+                    fetch("{{ url_for('cobertura') }}", {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al enviar el archivo');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.task_id) {
+                            currentTaskId = data.task_id;
+                            checkTaskStatus();
+                        } else if (data.status === 'error') {
+                            progressContainer.style.display = 'none';
+                            showError(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        progressContainer.style.display = 'none';
+                        showError(error.message || 'Error al enviar el archivo');
+                        console.error('Error:', error);
+                    });
+                });
+            }
+            
+            // Manejar coordenadas manuales
+            const manualForm = document.getElementById('manual-form');
+            if (manualForm) {
+                manualForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    
+                    // Reiniciar estado
+                    resultsContainer.innerHTML = '';
+                    downloadContainer.style.display = 'none';
+                    progressContainer.style.display = 'block';
+                    progressBar.style.width = '0%';
+                    progressText.textContent = 'Procesando coordenada...';
+                    progressPercent.textContent = '0%';
+                    
+                    fetch("{{ url_for('cobertura') }}", {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la solicitud');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        progressContainer.style.display = 'none';
+                        if (data.status === 'success') {
+                            if (data.result) {
+                                // Formatear el resultado individual
+                                const result = data.result;
+                                
+                                // Crear HTML para los detalles GPON
+                                const gponDetails = `
+                                    <div class="gpon-details-section">
+                                        <div class="gpon-details-title">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            Detalles de GPON
+                                        </div>
+                                        <div class="gpon-details-grid">
+                                            <div class="gpon-detail-item">
+                                                <div class="gpon-detail-label">Nombre GPON</div>
+                                                <div class="gpon-detail-value">${result['Nombre GPON'] || 'N/A'}</div>
+                                            </div>
+                                            <div class="gpon-detail-item">
+                                                <div class="gpon-detail-label">Sitio GPON más cercano</div>
+                                                <div class="gpon-detail-value">${result['Sitio GPON más cercano'] || 'N/A'}</div>
+                                            </div>
+                                            <div class="gpon-detail-item">
+                                                <div class="gpon-detail-label">Detalles GPON</div>
+                                                <div class="gpon-detail-value">${result['Detalles GPON'] || 'N/A'}</div>
+                                            </div>
+                                            <div class="gpon-detail-item">
+                                                <div class="gpon-detail-label">Distancia GPON</div>
+                                                <div class="gpon-detail-value">${result['Distancia GPON (m)'] || 'N/A'} m</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                const resultHtml = `
+                                    <div class="card result-card">
+                                        <div class="result-card-header">
+                                            <span>Resultado para: ${result.Coordenadas}</span>
+                                        </div>
+                                        <div class="result-card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Cobertura GPON:</label>
+                                                        <div class="fw-bold ${result['Cobertura GPON'].includes('Tiene') ? 'text-success' : 'text-danger'}">
+                                                            ${result['Cobertura GPON']}
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Nombre GPON:</label>
+                                                        <div>${result['Nombre GPON'] || 'N/A'}</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Sitio GPON más cercano:</label>
+                                                        <div>${result['Sitio GPON más cercano'] || 'N/A'}</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Detalles GPON:</label>
+                                                        <div>${result['Detalles GPON'] || 'N/A'}</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Distancia GPON:</label>
+                                                        <div>${result['Distancia GPON (m)']} m</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Precio Promedio GPON:</label>
+                                                        <div class="fw-bold">${result['Precio Promedio GPON']}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Cobertura Fibra:</label>
+                                                        <div class="fw-bold ${result['Fibra TX'].includes('Tiene') ? 'text-success' : 'text-danger'}">
+                                                            ${result['Fibra TX']}
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Polígono:</label>
+                                                        <div>${result['Nombre del polígono'] || 'N/A'}</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Distancia más cercana:</label>
+                                                        <div>${Math.min(
+                                                            parseFloat(result['Distancia Central (m)'] || Infinity),
+                                                            parseFloat(result['Distancia UR (m)'] || Infinity),
+                                                            parseFloat(result['Distancia Mufa (m)'] || Infinity)
+                                                        ).toFixed(2)} m</div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Precio Promedio Fibra:</label>
+                                                        <div class="fw-bold">${result['Precio Promedio Fibra']}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ${gponDetails}
+                                        </div>
+                                    </div>
+                                `;
+                                resultsContainer.innerHTML = resultHtml;
+                            }
+                            
+                            if (data.download_url) {
+                                downloadLink.href = data.download_url;
+                                downloadContainer.style.display = 'block';
+                            }
+                        } else {
+                            showError(data.message || 'Error en el procesamiento');
+                        }
+                    })
+                    .catch(error => {
+                        progressContainer.style.display = 'none';
+                        showError('Error en la comunicación con el servidor');
+                        console.error('Error:', error);
+                    });
+                });
+            }
+        });
+    </script>
+
+<script>
+    function checkTaskStatus(taskId) {
+        fetch(`/tasks/${taskId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Respuesta del servidor:", data); // DEBUG
+                
+                if (data.state === 'SUCCESS' && data.download_url) {
+                    // Mostrar enlace de descarga
+                    document.getElementById('result-link').href = data.download_url;
+                    document.getElementById('result-link').style.display = 'block';
+                    document.getElementById('status-message').innerHTML = 
+                        `<div class="alert alert-success">
+                            Procesamiento completado! 
+                            <a href="${data.download_url}" class="alert-link">Descargar resultados</a>
+                        </div>`;
+                    
+                    // Ocultar spinner
+                    document.getElementById('spinner').style.display = 'none';
+                }
+                else if (data.state === 'SUCCESS' && !data.download_url) {
+                    // Manejar caso donde falta la URL
+                    document.getElementById('status-message').innerHTML = 
+                        `<div class="alert alert-warning">
+                            Procesamiento completado pero no se encontró archivo de resultados.
+                            ${data.message || ''}
+                        </div>`;
+                }
+                else if (data.state === 'FAILURE' || data.state === 'ERROR') {
+                    // Manejar errores
+                    document.getElementById('status-message').innerHTML = 
+                        `<div class="alert alert-danger">
+                            Error en el procesamiento: ${data.error || data.message || 'Error desconocido'}
+                            <br>Detalles: ${data.details || 'Sin detalles'}
+                        </div>`;
+                    document.getElementById('spinner').style.display = 'none';
+                }
+                else {
+                    // Seguir consultando si aún está en progreso
+                    setTimeout(() => checkTaskStatus(taskId), 2000);
+                }
+            })
+            .catch(error => {
+                console.error("Error al verificar estado:", error);
+                document.getElementById('status-message').innerHTML = 
+                    `<div class="alert alert-danger">
+                        Error de conexión: ${error.message}
+                    </div>`;
+                document.getElementById('spinner').style.display = 'none';
+            });
+    }
+    </script>
+</body>
+</html>

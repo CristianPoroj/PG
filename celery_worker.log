@@ -1,0 +1,240 @@
+2025-06-24 20:56:58,548 - celery.utils.functional - DEBUG - 
+def backend_cleanup():
+    return 1
+
+2025-06-24 20:56:58,549 - celery.utils.functional - DEBUG - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2025-06-24 20:56:58,550 - celery.utils.functional - DEBUG - 
+def xmap(task, it):
+    return 1
+
+2025-06-24 20:56:58,550 - celery.utils.functional - DEBUG - 
+def procesar_archivo_task(self, file_path, user_id):
+    return 1
+
+2025-06-24 20:56:58,551 - celery.utils.functional - DEBUG - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2025-06-24 20:56:58,553 - celery.utils.functional - DEBUG - 
+def chain(*args, **kwargs):
+    return 1
+
+2025-06-24 20:56:58,553 - celery.utils.functional - DEBUG - 
+def xstarmap(task, it):
+    return 1
+
+2025-06-24 20:56:58,554 - celery.utils.functional - DEBUG - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2025-06-24 20:56:58,554 - celery.utils.functional - DEBUG - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2025-06-24 20:56:58,555 - celery.utils.functional - DEBUG - 
+def chunks(task, it, n):
+    return 1
+
+2025-06-24 21:07:05,319 - celery.utils.functional - DEBUG - 
+def backend_cleanup():
+    return 1
+
+2025-06-24 21:07:05,320 - celery.utils.functional - DEBUG - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2025-06-24 21:07:05,321 - celery.utils.functional - DEBUG - 
+def xmap(task, it):
+    return 1
+
+2025-06-24 21:07:05,322 - celery.utils.functional - DEBUG - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2025-06-24 21:07:05,322 - celery.utils.functional - DEBUG - 
+def chain(*args, **kwargs):
+    return 1
+
+2025-06-24 21:07:05,323 - celery.utils.functional - DEBUG - 
+def xstarmap(task, it):
+    return 1
+
+2025-06-24 21:07:05,324 - celery.utils.functional - DEBUG - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2025-06-24 21:07:05,324 - celery.utils.functional - DEBUG - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2025-06-24 21:07:05,325 - celery.utils.functional - DEBUG - 
+def chunks(task, it, n):
+    return 1
+
+2025-06-24 21:07:05,325 - celery.utils.functional - DEBUG - 
+def procesar_archivo_task(self, file_path, user_id):
+    return 1
+
+2025-06-24 21:10:42,021 - celery.utils.functional - DEBUG - 
+def backend_cleanup():
+    return 1
+
+2025-06-24 21:10:42,022 - celery.utils.functional - DEBUG - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2025-06-24 21:10:42,023 - celery.utils.functional - DEBUG - 
+def xmap(task, it):
+    return 1
+
+2025-06-24 21:10:42,023 - celery.utils.functional - DEBUG - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2025-06-24 21:10:42,024 - celery.utils.functional - DEBUG - 
+def chain(*args, **kwargs):
+    return 1
+
+2025-06-24 21:10:42,024 - celery.utils.functional - DEBUG - 
+def xstarmap(task, it):
+    return 1
+
+2025-06-24 21:10:42,025 - celery.utils.functional - DEBUG - 
+def procesar_archivo_task(self, file_path, user_id):
+    return 1
+
+2025-06-24 21:10:42,025 - celery.utils.functional - DEBUG - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2025-06-24 21:10:42,026 - celery.utils.functional - DEBUG - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2025-06-24 21:10:42,027 - celery.utils.functional - DEBUG - 
+def chunks(task, it, n):
+    return 1
+
+2025-06-24 21:23:02,437 - celery.utils.functional - DEBUG - 
+def backend_cleanup():
+    return 1
+
+2025-06-24 21:23:02,438 - celery.utils.functional - DEBUG - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2025-06-24 21:23:02,439 - celery.utils.functional - DEBUG - 
+def xmap(task, it):
+    return 1
+
+2025-06-24 21:23:02,439 - celery.utils.functional - DEBUG - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2025-06-24 21:23:02,440 - celery.utils.functional - DEBUG - 
+def chain(*args, **kwargs):
+    return 1
+
+2025-06-24 21:23:02,440 - celery.utils.functional - DEBUG - 
+def xstarmap(task, it):
+    return 1
+
+2025-06-24 21:23:02,441 - celery.utils.functional - DEBUG - 
+def procesar_archivo_task(self, file_path, user_id):
+    return 1
+
+2025-06-24 21:23:02,441 - celery.utils.functional - DEBUG - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2025-06-24 21:23:02,442 - celery.utils.functional - DEBUG - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2025-06-24 21:23:02,443 - celery.utils.functional - DEBUG - 
+def chunks(task, it, n):
+    return 1
+
+2025-06-24 21:37:00,896 - celery.utils.functional - DEBUG - 
+def backend_cleanup():
+    return 1
+
+2025-06-24 21:37:00,897 - celery.utils.functional - DEBUG - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2025-06-24 21:37:00,898 - celery.utils.functional - DEBUG - 
+def xmap(task, it):
+    return 1
+
+2025-06-24 21:37:00,899 - celery.utils.functional - DEBUG - 
+def procesar_archivo_task(self, file_path, user_id):
+    return 1
+
+2025-06-24 21:37:00,899 - celery.utils.functional - DEBUG - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2025-06-24 21:37:00,900 - celery.utils.functional - DEBUG - 
+def chain(*args, **kwargs):
+    return 1
+
+2025-06-24 21:37:00,900 - celery.utils.functional - DEBUG - 
+def xstarmap(task, it):
+    return 1
+
+2025-06-24 21:37:00,901 - celery.utils.functional - DEBUG - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2025-06-24 21:37:00,902 - celery.utils.functional - DEBUG - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2025-06-24 21:37:00,902 - celery.utils.functional - DEBUG - 
+def chunks(task, it, n):
+    return 1
+
+2025-06-24 21:50:54,243 - celery.utils.functional - DEBUG - 
+def backend_cleanup():
+    return 1
+
+2025-06-24 21:50:54,244 - celery.utils.functional - DEBUG - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2025-06-24 21:50:54,244 - celery.utils.functional - DEBUG - 
+def xmap(task, it):
+    return 1
+
+2025-06-24 21:50:54,245 - celery.utils.functional - DEBUG - 
+def procesar_archivo_task(self, file_path, user_id):
+    return 1
+
+2025-06-24 21:50:54,246 - celery.utils.functional - DEBUG - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2025-06-24 21:50:54,246 - celery.utils.functional - DEBUG - 
+def chain(*args, **kwargs):
+    return 1
+
+2025-06-24 21:50:54,246 - celery.utils.functional - DEBUG - 
+def xstarmap(task, it):
+    return 1
+
+2025-06-24 21:50:54,247 - celery.utils.functional - DEBUG - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2025-06-24 21:50:54,248 - celery.utils.functional - DEBUG - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2025-06-24 21:50:54,248 - celery.utils.functional - DEBUG - 
+def chunks(task, it, n):
+    return 1
+
